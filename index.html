@@ -50,7 +50,7 @@
           set.add(n);
         }
       }
-      return Array.from(result).sort((a, b) => a - b);
+      return result.sort((a, b) => a - b);
     }
 
     function generarCarton() {
@@ -59,7 +59,6 @@
       }
       const contenedor = document.getElementById("bingo");
       contenedor.innerHTML = "";
-      contenedor.classList.remove('bingo-won'); // Remove bingo-won class on new game
 
       const pattern = patronesValidos[Math.floor(Math.random() * patronesValidos.length)];
       const columnas = Array.from({ length: 9 }, (_, i) => {
@@ -83,67 +82,11 @@
           if (num !== null) {
             celda.className = "cell";
             celda.textContent = num;
-            celda.dataset.row = fila; // Store row for easy access
-            celda.dataset.col = col; // Store column for easy access
-            celda.onclick = () => {
-              celda.classList.toggle("marked"); // Corregido: usa toggle
-              checkGameStatus(); // Check for lines/bingo after each click
-            };
+            celda.onclick = () => celda.classList.toggle("marked");
           } else {
             celda.className = "cell empty";
           }
           contenedor.appendChild(celda);
-        }
-      }
-    }
-
-    function checkGameStatus() {
-      const allCells = Array.from(document.querySelectorAll('.bingo-card .cell:not(.empty)'));
-      const markedCells = Array.from(document.querySelectorAll('.bingo-card .cell.marked'));
-      const bingoCard = document.getElementById('bingo');
-
-      // Check for Bingo
-      if (markedCells.length === allCells.length && allCells.length > 0) {
-        bingoCard.classList.add('bingo-won');
-        alert("¡BINGO!"); // Simple alert for now
-        return; // No need to check for lines if Bingo is achieved
-      } else {
-        bingoCard.classList.remove('bingo-won');
-      }
-
-      // Check for Lines
-      const cells = document.querySelectorAll('.bingo-card .cell:not(.empty)');
-      const grid = Array.from({ length: 3 }, () => Array(9).fill(null));
-
-      cells.forEach(cell => {
-        const row = parseInt(cell.dataset.row);
-        const col = parseInt(cell.dataset.col);
-        grid[row][col] = cell.classList.contains('marked');
-      });
-
-      // Check horizontal lines
-      for (let r = 0; r < 3; r++) {
-        let cellsInRow = 0;
-        let markedInRow = 0;
-        let lineCells = [];
-        for (let c = 0; c < 9; c++) {
-          const cell = document.querySelector(`.cell[data-row="${r}"][data-col="${c}"]`);
-          if (cell && !cell.classList.contains('empty')) {
-            cellsInRow++;
-            if (grid[r][c]) {
-              markedInRow++;
-              lineCells.push(cell);
-            }
-          }
-        }
-        if (cellsInRow > 0 && markedInRow === cellsInRow && markedInRow === 5) { // Only 5 cells per line for a valid bingo row
-          lineCells.forEach(cell => {
-            cell.classList.add('line-animation');
-            // Remove animation class after it completes
-            cell.addEventListener('animationend', () => {
-              cell.classList.remove('line-animation');
-            }, { once: true });
-          });
         }
       }
     }
@@ -168,7 +111,7 @@
       const defaultColorDiv = document.querySelector('.color-selector .color');
       if (defaultColorDiv) {
         document.documentElement.style.setProperty('--primary-color', defaultColorDiv.dataset.colorPrimary);
-        document.documentElement.style.setProperty('--secondary-color', defaultColorDiv.dataset.secondaryColor);
+        document.documentElement.style.setProperty('--secondary-color', defaultColorDiv.dataset.colorSecondary);
         document.documentElement.style.setProperty('--background-cell-color', defaultColorDiv.dataset.colorBackground);
       }
       generarCarton();

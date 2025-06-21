@@ -21,14 +21,14 @@ body {
   align-items: center;
   justify-content: flex-start;
   min-height: 100vh;
-  padding: 0;
+  padding: 0; /* Remove padding from body as header and card will handle spacing */
   box-sizing: border-box;
 }
 
 header {
   width: 100%;
-  background-color: var(--header-bg-color);
-  color: var(--header-text-color);
+  background-color: var(--header-bg-color); /* Use black for header background */
+  color: var(--header-text-color); /* Use white for header text */
   text-align: center;
   padding: 1rem;
   font-size: 1.2rem;
@@ -95,14 +95,113 @@ button:hover {
   display: grid;
   grid-template-columns: repeat(9, 1fr);
   gap: 3px;
-  width: calc(100% - 2rem);
+  width: calc(100% - 2rem); /* Occupy full width minus some padding */
   max-width: 900px;
   background-color: #ccc;
   border: 2px solid #aaa;
   border-radius: 8px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  flex-grow: 1;
-  margin: 1rem;
-  box-sizing: border-box;
+  flex-grow: 1; /* Allow the card to grow and fill available space */
+  margin: 1rem; /* Add consistent margin around the card */
+  box-sizing: border-box; /* Ensure padding/border included in width */
 
-  height: calc(100vh - 2rem - 60px -
+  /* Make sure cells are square and the grid fills available height */
+  height: calc(100vh - 2rem - 60px - 1rem); /* Full height minus header height and vertical margins */
+  /* This 60px is an approximation of header height. You might need to adjust based on exact header height. */
+  /* A more robust solution would involve JavaScript to calculate header height dynamically. */
+  min-height: 200px; /* Minimum height for the card */
+  aspect-ratio: 9 / 3; /* Maintain aspect ratio for square cells */
+}
+
+.cell {
+  background-color: var(--background-cell-color);
+  border: 1px solid #ddd;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
+  color: var(--primary-color);
+  user-select: none;
+  transition: background 0.2s, color 0.2s;
+  cursor: pointer;
+  box-sizing: border-box; /* Ensure padding/border included in cell size */
+
+  /* Make cells responsive and scale font */
+  font-size: 4.5vw; /* Adjust font size based on viewport width */
+  max-font-size: 2rem; /* Cap font size for very large screens */
+  min-font-size: 0.8rem; /* Minimum font size for very small screens */
+}
+
+.cell.marked {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.cell.empty {
+  background-color: #e0e0e0;
+  border: 1px solid #ccc;
+  cursor: default;
+}
+
+@media (min-width: 601px) {
+  header {
+    flex-direction: row;
+  }
+
+  .header-controls {
+    flex-direction: row;
+    width: auto;
+  }
+
+  .bingo-card {
+    height: auto; /* Let content determine height on larger screens */
+    width: 70%; /* Adjust width for larger screens */
+    margin: 1rem auto; /* Center with auto margins */
+    max-width: 900px;
+  }
+
+  .cell {
+    font-size: 2rem; /* Larger font for desktop */
+  }
+}
+
+@media (max-width: 600px) {
+  .cell {
+    font-size: 6vw; /* More aggressive scaling for very small screens */
+  }
+
+  .bingo-card {
+    margin: 0.5rem; /* Reduce margin on small screens */
+    width: calc(100% - 1rem); /* Adjust width */
+  }
+
+  header {
+    padding: 0.8rem;
+    font-size: 1rem;
+  }
+}
+
+/* Specific adjustments for aspect ratio of cells within the grid */
+/* This is crucial for making cells square */
+.bingo-card .cell {
+  position: relative; /* For absolute positioning of content */
+}
+
+.bingo-card .cell::before {
+  content: "";
+  display: block;
+  padding-top: 100%; /* Makes the height equal to the width */
+}
+
+.bingo-card .cell > span { /* If you wrap number in a span */
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.bingo-card .cell {
+  display: flex; /* Flexbox for centering content */
+  align-items: center;
+  justify-content: center;
+}
