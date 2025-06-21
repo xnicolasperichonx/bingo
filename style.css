@@ -5,6 +5,7 @@
   --menu-bg-color: #000000; /* Menu background color (black) */
   --menu-text-color: #ffffff; /* Menu text color (white) */
   --menu-width: 100px; /* Ancho del menú lateral para desktop */
+  --mobile-menu-height: 80px; /* Altura del menú en modo móvil */
 }
 
 html, body {
@@ -105,7 +106,7 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 1rem; /* Espacio alrededor del cartón de bingo */
+  padding: 0; /* Elimina padding superior/inferior para que el cartón esté más cerca */
   box-sizing: border-box;
   overflow: hidden; /* Evita que el contenido del cartón desborde */
 }
@@ -114,7 +115,7 @@ body {
   display: grid;
   grid-template-columns: repeat(9, 1fr);
   gap: 3px;
-  width: 100%; /* Ocupa el 100% del main-content */
+  width: calc(100% - 2rem); /* Ocupa el 100% del main-content menos un padding */
   max-width: 900px; /* Limita el tamaño máximo del cartón */
   background-color: #ccc;
   border: 2px solid #aaa;
@@ -123,7 +124,8 @@ body {
   aspect-ratio: 9 / 3; /* Mantiene la relación de aspecto para celdas cuadradas */
   align-self: center; /* Centra el cartón verticalmente dentro del main-content */
   justify-self: center; /* Centra el cartón horizontalmente dentro del main-content */
-
+  margin: 0; /* Elimina el margen del cartón para que suba */
+  
   /* Animaciones de línea y bingo (existentes) */
   transition: transform 0.5s ease-in-out, box-shadow 0.5s ease-in-out;
 }
@@ -140,7 +142,7 @@ body {
   cursor: pointer;
   box-sizing: border-box;
 
-  /* Hace las celdas cuadradas sin depender de padding-top truco */
+  /* Hace las celdas cuadradas */
   position: relative;
   width: 100%;
   padding-bottom: 100%; /* Hace que la altura sea igual al ancho */
@@ -183,7 +185,7 @@ body {
 }
 
 .cell.line-animation {
-  animation: lineFlash 0.6s ease-in-out;
+  animation: lineFlash 1.2s ease-in-out; /* Duración más larga */
 }
 
 /* Animación de Bingo */
@@ -220,9 +222,11 @@ body {
     justify-content: space-around; /* Distribuye el espacio entre ellos */
     padding: 0.8rem;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-    position: sticky; /* Puede ser sticky en la parte superior */
+    position: fixed; /* Fijo en la parte superior del viewport */
     top: 0;
+    left: 0;
     z-index: 10; /* Asegura que esté por encima de otros elementos */
+    height: var(--mobile-menu-height); /* Altura fija para el menú móvil */
   }
 
   .left-menu h1 {
@@ -251,6 +255,7 @@ body {
     flex-grow: 1;
     width: 100%; /* Ocupa todo el ancho */
     padding: 0.5rem;
+    padding-top: calc(var(--mobile-menu-height) + 0.5rem); /* Ajusta padding superior por el menú fijo */
   }
 
   .bingo-card {
@@ -276,5 +281,9 @@ body {
     font-size: 1rem;
     width: 30px;
     height: 30px;
+  }
+  /* Reduce un poco la altura del menú en teléfonos muy pequeños */
+  :root {
+      --mobile-menu-height: 70px;
   }
 }

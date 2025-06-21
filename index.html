@@ -42,6 +42,8 @@
       // Se pueden agregar más patrones reales extraídos del PDF si querés variedad
     ];
 
+    let lineAnimationTriggeredThisGame = false; // Nueva variable para controlar la animación de línea
+
     function getUniqueRandomNumbers(count, min, max, exclude = []) {
       const set = new Set(exclude);
       const result = [];
@@ -62,6 +64,7 @@
       const contenedor = document.getElementById("bingo");
       contenedor.innerHTML = "";
       contenedor.classList.remove('bingo-won'); // Remove bingo-won class on new game
+      lineAnimationTriggeredThisGame = false; // Resetear la variable al generar un nuevo cartón
 
       const pattern = patronesValidos[Math.floor(Math.random() * patronesValidos.length)];
       const columnas = Array.from({ length: 9 }, (_, i) => {
@@ -139,13 +142,15 @@
           }
         }
         if (cellsInRow > 0 && markedInRow === cellsInRow && markedInRow === 5) { // Only 5 cells per line for a valid bingo row
-          lineCells.forEach(cell => {
-            cell.classList.add('line-animation');
-            // Remove animation class after it completes
-            cell.addEventListener('animationend', () => {
-              cell.classList.remove('line-animation');
-            }, { once: true });
-          });
+          if (!lineAnimationTriggeredThisGame) { // Solo animar si no se ha activado aún en este juego
+            lineCells.forEach(cell => {
+              cell.classList.add('line-animation');
+              cell.addEventListener('animationend', () => {
+                cell.classList.remove('line-animation');
+              }, { once: true });
+            });
+            lineAnimationTriggeredThisGame = true; // Marcar que ya se activó la animación
+          }
         }
       }
     }
