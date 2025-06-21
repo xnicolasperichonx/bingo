@@ -2,8 +2,9 @@
   --primary-color: #ff6600; /* Default primary color */
   --secondary-color: #ff9933; /* Default secondary color */
   --background-cell-color: #fff4dc; /* Default background for number cells */
-  --header-bg-color: #000000; /* New variable for black header */
-  --header-text-color: #ffffff; /* Text color for black header */
+  --menu-bg-color: #000000; /* Menu background color (black) */
+  --menu-text-color: #ffffff; /* Menu text color (white) */
+  --menu-width: 100px; /* Ancho del menú lateral para desktop */
 }
 
 html, body {
@@ -16,69 +17,53 @@ html, body {
 body {
   font-family: sans-serif;
   background-color: #f0f0f0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  display: flex; /* Usamos flexbox para el diseño principal */
+  flex-direction: row; /* Menú a la izquierda, contenido a la derecha */
+  align-items: stretch; /* Estira los elementos hijos para llenar la altura */
   justify-content: flex-start;
   min-height: 100vh;
-  padding: 0; /* Remove padding from body as header and card will handle spacing */
   box-sizing: border-box;
 }
 
-header {
-  width: 100%;
-  background-color: var(--header-bg-color); /* Use black for header background */
-  color: var(--header-text-color); /* Use white for header text */
-  text-align: center;
-  padding: 1rem;
+.left-menu {
+  width: var(--menu-width); /* Ancho del menú lateral */
+  background-color: var(--menu-bg-color);
+  color: var(--menu-text-color);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1rem 0.5rem; /* Ajusta el padding para el menú */
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
+  flex-shrink: 0; /* Evita que el menú se encoja */
+  overflow-y: auto; /* Permite scroll si el contenido es mucho */
+}
+
+.left-menu h1 {
   font-size: 1.2rem;
-  position: sticky;
-  top: 0;
-  z-index: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  align-items: center;
-  gap: 0.8rem;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  line-height: 1.3;
 }
 
-.header-controls {
+.menu-controls {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.8rem;
+  gap: 1rem; /* Espacio entre el selector de color y el botón */
   width: 100%;
-}
-
-button {
-  padding: 0.6rem 1.2rem;
-  background-color: white;
-  color: var(--primary-color);
-  border: 2px solid #fff;
-  border-radius: 5px;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: background-color 0.2s, color 0.2s, border-color 0.2s;
-  flex-shrink: 0;
-}
-
-button:hover {
-  background-color: #fff;
-  color: var(--primary-color);
-  border-color: var(--primary-color);
 }
 
 .color-selector {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 0.7rem;
+  gap: 0.5rem;
 }
 
 .color-selector .color {
-  width: 2.2rem;
-  height: 2.2rem;
+  width: 2rem;
+  height: 2rem;
   border-radius: 50%;
   cursor: pointer;
   border: 3px solid #fff;
@@ -91,26 +76,56 @@ button:hover {
   transform: scale(1.05);
 }
 
+.refresh-button {
+  padding: 0.5rem; /* Menos padding para un botón de icono */
+  background-color: white;
+  color: var(--primary-color);
+  border: 2px solid #fff;
+  border-radius: 50%; /* Hacerlo redondo para el icono */
+  font-size: 1.5rem; /* Tamaño grande para el icono */
+  cursor: pointer;
+  transition: background-color 0.2s, color 0.2s, border-color 0.2s;
+  width: 45px; /* Tamaño fijo para el botón redondo */
+  height: 45px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  line-height: 1; /* Asegura que el icono esté centrado verticalmente */
+  flex-shrink: 0;
+}
+
+.refresh-button:hover {
+  background-color: #fff;
+  color: var(--primary-color);
+  border-color: var(--primary-color);
+}
+
+.main-content {
+  flex-grow: 1; /* El contenido principal ocupa todo el espacio restante */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem; /* Espacio alrededor del cartón de bingo */
+  box-sizing: border-box;
+  overflow: hidden; /* Evita que el contenido del cartón desborde */
+}
+
 .bingo-card {
   display: grid;
   grid-template-columns: repeat(9, 1fr);
   gap: 3px;
-  width: calc(100% - 2rem); /* Occupy full width minus some padding */
-  max-width: 900px;
+  width: 100%; /* Ocupa el 100% del main-content */
+  max-width: 900px; /* Limita el tamaño máximo del cartón */
   background-color: #ccc;
   border: 2px solid #aaa;
   border-radius: 8px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  flex-grow: 1; /* Allow the card to grow and fill available space */
-  margin: 1rem; /* Add consistent margin around the card */
-  box-sizing: border-box; /* Ensure padding/border included in width */
+  aspect-ratio: 9 / 3; /* Mantiene la relación de aspecto para celdas cuadradas */
+  align-self: center; /* Centra el cartón verticalmente dentro del main-content */
+  justify-self: center; /* Centra el cartón horizontalmente dentro del main-content */
 
-  /* Make sure cells are square and the grid fills available height */
-  height: calc(100vh - 2rem - 60px - 1rem); /* Full height minus header height and vertical margins */
-  /* This 60px is an approximation of header height. You might need to adjust based on exact header height. */
-  /* A more robust solution would involve JavaScript to calculate header height dynamically. */
-  min-height: 200px; /* Minimum height for the card */
-  aspect-ratio: 9 / 3; /* Maintain aspect ratio for square cells */
+  /* Animaciones de línea y bingo (existentes) */
+  transition: transform 0.5s ease-in-out, box-shadow 0.5s ease-in-out;
 }
 
 .cell {
@@ -122,19 +137,36 @@ button:hover {
   font-weight: bold;
   color: var(--primary-color);
   user-select: none;
-  transition: background 0.2s, color 0.2s;
   cursor: pointer;
-  box-sizing: border-box; /* Ensure padding/border included in cell size */
+  box-sizing: border-box;
 
-  /* Make cells responsive and scale font */
-  font-size: 4.5vw; /* Adjust font size based on viewport width */
-  max-font-size: 2rem; /* Cap font size for very large screens */
-  min-font-size: 0.8rem; /* Minimum font size for very small screens */
+  /* Hace las celdas cuadradas sin depender de padding-top truco */
+  position: relative;
+  width: 100%;
+  padding-bottom: 100%; /* Hace que la altura sea igual al ancho */
+
+  /* Ajusta el tamaño de fuente para que sea responsive dentro de la celda */
+  font-size: calc(1rem + 1vw); /* Tamaño base + escala con viewport width */
+  max-font-size: 2rem;
+  min-font-size: 0.8rem;
+
+  /* Transiciones para marked y animations */
+  transition: background-color 0.2s, color 0.2s, transform 0.2s ease-out;
+  transform: scale(1);
+}
+
+.cell span { /* Para el contenido dentro de la celda */
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  line-height: 1; /* Asegura que el texto esté centrado verticalmente */
 }
 
 .cell.marked {
   background-color: var(--primary-color);
   color: white;
+  transform: scale(1.05);
 }
 
 .cell.empty {
@@ -143,65 +175,106 @@ button:hover {
   cursor: default;
 }
 
-@media (min-width: 601px) {
-  header {
-    flex-direction: row;
+/* Animación de Línea */
+@keyframes lineFlash {
+  0% { transform: scale(1); background-color: var(--primary-color); }
+  50% { transform: scale(1.1); background-color: #ffeb3b; }
+  100% { transform: scale(1); background-color: var(--primary-color); }
+}
+
+.cell.line-animation {
+  animation: lineFlash 0.6s ease-in-out;
+}
+
+/* Animación de Bingo */
+@keyframes bingoShake {
+  0% { transform: translate(1px, 1px) rotate(0deg); }
+  10% { transform: translate(-1px, -2px) rotate(-1deg); }
+  20% { transform: translate(-3px, 0px) rotate(1deg); }
+  30% { transform: translate(3px, 2px) rotate(0deg); }
+  40% { transform: translate(1px, -1px) rotate(1deg); }
+  50% { transform: translate(-1px, 2px) rotate(-1deg); }
+  60% { transform: translate(-3px, 1px) rotate(0deg); }
+  70% { transform: translate(3px, 1px) rotate(-1deg); }
+  80% { transform: translate(-1px, -1px) rotate(1deg); }
+  90% { transform: translate(1px, 2px) rotate(0deg); }
+  100% { transform: translate(1px, -2px) rotate(-1deg); }
+}
+
+.bingo-card.bingo-won {
+  animation: bingoShake 0.5s ease-in-out 3;
+  box-shadow: 0 0 20px 10px var(--primary-color);
+}
+
+
+/* Media Queries para Responsive */
+@media (max-width: 768px) { /* Para tablets y móviles */
+  body {
+    flex-direction: column; /* Apila el menú y el contenido en columnas */
+    align-items: center; /* Centra el contenido horizontalmente */
   }
 
-  .header-controls {
-    flex-direction: row;
+  .left-menu {
+    width: 100%; /* El menú ocupa todo el ancho */
+    flex-direction: row; /* Los controles del menú se ponen en fila */
+    justify-content: space-around; /* Distribuye el espacio entre ellos */
+    padding: 0.8rem;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    position: sticky; /* Puede ser sticky en la parte superior */
+    top: 0;
+    z-index: 10; /* Asegura que esté por encima de otros elementos */
+  }
+
+  .left-menu h1 {
+    font-size: 1.1rem;
+    margin: 0;
+  }
+
+  .menu-controls {
+    flex-direction: row; /* Controles en fila */
+    gap: 0.8rem;
     width: auto;
   }
 
+  .color-selector .color {
+    width: 1.8rem; /* Iconos de color más pequeños en móvil */
+    height: 1.8rem;
+  }
+
+  .refresh-button {
+    font-size: 1.2rem;
+    width: 35px;
+    height: 35px;
+  }
+
+  .main-content {
+    flex-grow: 1;
+    width: 100%; /* Ocupa todo el ancho */
+    padding: 0.5rem;
+  }
+
   .bingo-card {
-    height: auto; /* Let content determine height on larger screens */
-    width: 70%; /* Adjust width for larger screens */
-    margin: 1rem auto; /* Center with auto margins */
-    max-width: 900px;
+    width: calc(100% - 1rem); /* Ajusta el ancho con padding */
+    margin: 0 auto; /* Centra el cartón */
+    height: auto; /* Deja que la relación de aspecto determine la altura */
   }
 
   .cell {
-    font-size: 2rem; /* Larger font for desktop */
+    font-size: 6vw; /* Ajusta el tamaño de la fuente para móviles */
   }
 }
 
-@media (max-width: 600px) {
-  .cell {
-    font-size: 6vw; /* More aggressive scaling for very small screens */
-  }
-
-  .bingo-card {
-    margin: 0.5rem; /* Reduce margin on small screens */
-    width: calc(100% - 1rem); /* Adjust width */
-  }
-
-  header {
-    padding: 0.8rem;
+@media (max-width: 480px) { /* Ajustes para teléfonos más pequeños */
+  .left-menu h1 {
     font-size: 1rem;
   }
-}
-
-/* Specific adjustments for aspect ratio of cells within the grid */
-/* This is crucial for making cells square */
-.bingo-card .cell {
-  position: relative; /* For absolute positioning of content */
-}
-
-.bingo-card .cell::before {
-  content: "";
-  display: block;
-  padding-top: 100%; /* Makes the height equal to the width */
-}
-
-.bingo-card .cell > span { /* If you wrap number in a span */
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-}
-
-.bingo-card .cell {
-  display: flex; /* Flexbox for centering content */
-  align-items: center;
-  justify-content: center;
+  .color-selector .color {
+    width: 1.6rem;
+    height: 1.6rem;
+  }
+  .refresh-button {
+    font-size: 1rem;
+    width: 30px;
+    height: 30px;
+  }
 }
