@@ -42,7 +42,7 @@
       // Se pueden agregar más patrones reales extraídos del PDF si querés variedad
     ];
 
-    let lineAnimationTriggeredThisGame = false; // Nueva variable para controlar la animación de línea
+    let lineAnimationTriggeredThisGame = false; // Controla que la animación de línea se dispare una sola vez por juego
 
     function getUniqueRandomNumbers(count, min, max, exclude = []) {
       const set = new Set(exclude);
@@ -107,13 +107,14 @@
       const markedCells = Array.from(document.querySelectorAll('.bingo-card .cell.marked'));
       const bingoCard = document.getElementById('bingo');
 
+      // Remover cualquier animación de bingo previa para evitar conflictos visuales
+      bingoCard.classList.remove('bingo-won');
+
       // Check for Bingo
       if (markedCells.length === allCells.length && allCells.length > 0) {
         bingoCard.classList.add('bingo-won');
-        alert("¡BINGO!"); // Simple alert for now
+        // No alert, solo la animación
         return; // No need to check for lines if Bingo is achieved
-      } else {
-        bingoCard.classList.remove('bingo-won');
       }
 
       // Check for Lines
@@ -126,32 +127,33 @@
         grid[row][col] = cell.classList.contains('marked');
       });
 
+      let lineFoundThisCheck = false;
       // Check horizontal lines
       for (let r = 0; r < 3; r++) {
         let cellsInRow = 0;
         let markedInRow = 0;
-        let lineCells = [];
         for (let c = 0; c < 9; c++) {
           const cell = document.querySelector(`.cell[data-row="${r}"][data-col="${c}"]`);
           if (cell && !cell.classList.contains('empty')) {
             cellsInRow++;
             if (grid[r][c]) {
               markedInRow++;
-              lineCells.push(cell);
             }
           }
         }
         if (cellsInRow > 0 && markedInRow === cellsInRow && markedInRow === 5) { // Only 5 cells per line for a valid bingo row
-          if (!lineAnimationTriggeredThisGame) { // Solo animar si no se ha activado aún en este juego
-            lineCells.forEach(cell => {
-              cell.classList.add('line-animation');
-              cell.addEventListener('animationend', () => {
-                cell.classList.remove('line-animation');
-              }, { once: true });
-            });
-            lineAnimationTriggeredThisGame = true; // Marcar que ya se activó la animación
-          }
+          lineFoundThisCheck = true; // Se encontró al menos una línea
+          break; // Si encontramos una línea, salimos del bucle para no re-triggerear innecesariamente
         }
+      }
+
+      if (lineFoundThisCheck && !lineAnimationTriggeredThisGame) {
+        bingoCard.classList.add('bingo-won'); // Usa la misma animación del bingo
+        lineAnimationTriggeredThisGame = true; // Marcar que la animación de línea ya se activó
+        // Remover la animación después de que termine para que pueda re-activarse en un futuro bingo
+        bingoCard.addEventListener('animationend', () => {
+            bingoCard.classList.remove('bingo-won');
+        }, { once: true });
       }
     }
 

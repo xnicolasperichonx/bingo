@@ -105,10 +105,18 @@ body {
   flex-grow: 1; /* El contenido principal ocupa todo el espacio restante */
   display: flex;
   justify-content: center;
-  align-items: center;
-  padding: 0; /* Elimina padding superior/inferior para que el cartón esté más cerca */
+  align-items: flex-start; /* Alinea el cartón arriba */
+  padding: 0; /* Elimina padding */
   box-sizing: border-box;
   overflow: hidden; /* Evita que el contenido del cartón desborde */
+
+  /* Posicionamiento fijo para el cartón */
+  position: fixed;
+  top: 0;
+  left: var(--menu-width); /* Comienza después del menú lateral */
+  width: calc(100% - var(--menu-width)); /* Ocupa el resto del ancho */
+  height: 100vh; /* Ocupa toda la altura disponible */
+  z-index: 1; /* Asegura que esté por encima de otros elementos si hay superposiciones */
 }
 
 .bingo-card {
@@ -122,9 +130,7 @@ body {
   border-radius: 8px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   aspect-ratio: 9 / 3; /* Mantiene la relación de aspecto para celdas cuadradas */
-  align-self: center; /* Centra el cartón verticalmente dentro del main-content */
-  justify-self: center; /* Centra el cartón horizontalmente dentro del main-content */
-  margin: 0; /* Elimina el margen del cartón para que suba */
+  margin-top: 1rem; /* Añade un pequeño margen superior para separación del borde */
   
   /* Animaciones de línea y bingo (existentes) */
   transition: transform 0.5s ease-in-out, box-shadow 0.5s ease-in-out;
@@ -177,18 +183,18 @@ body {
   cursor: default;
 }
 
-/* Animación de Línea */
-@keyframes lineFlash {
+/* Antiguo animación de Línea (ahora no se usa directamente) */
+/* @keyframes lineFlash {
   0% { transform: scale(1); background-color: var(--primary-color); }
   50% { transform: scale(1.1); background-color: #ffeb3b; }
   100% { transform: scale(1); background-color: var(--primary-color); }
-}
+} */
 
-.cell.line-animation {
-  animation: lineFlash 1.2s ease-in-out; /* Duración más larga */
-}
+/* .cell.line-animation {
+  animation: lineFlash 1.2s ease-in-out; 
+} */
 
-/* Animación de Bingo */
+/* Animación de Bingo (reutilizada para línea y bingo) */
 @keyframes bingoShake {
   0% { transform: translate(1px, 1px) rotate(0deg); }
   10% { transform: translate(-1px, -2px) rotate(-1deg); }
@@ -252,16 +258,25 @@ body {
   }
 
   .main-content {
-    flex-grow: 1;
+    flex-grow: 1; /* Esto ya no es tan relevante con position: fixed */
     width: 100%; /* Ocupa todo el ancho */
-    padding: 0.5rem;
-    padding-top: calc(var(--mobile-menu-height) + 0.5rem); /* Ajusta padding superior por el menú fijo */
+    height: calc(100vh - var(--mobile-menu-height)); /* Ocupa el resto de la altura */
+    position: fixed; /* Fijo debajo del menú */
+    top: var(--mobile-menu-height); /* Comienza justo después del menú */
+    left: 0;
+    padding: 0.5rem; /* Pequeño padding alrededor del cartón */
+    display: flex; /* Asegura que el cartón se centre verticalmente */
+    align-items: flex-start; /* Alinea el cartón en la parte superior del main-content */
+    justify-content: center; /* Centra el cartón horizontalmente */
+    overflow: auto; /* Permite desplazamiento si el cartón es demasiado grande */
   }
 
   .bingo-card {
     width: calc(100% - 1rem); /* Ajusta el ancho con padding */
     margin: 0 auto; /* Centra el cartón */
+    max-height: 100%; /* Limita la altura máxima al contenedor */
     height: auto; /* Deja que la relación de aspecto determine la altura */
+    margin-top: 0.5rem; /* Un pequeño margen para que no esté totalmente pegado */
   }
 
   .cell {
